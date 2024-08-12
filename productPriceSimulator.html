@@ -1,0 +1,131 @@
+<template>
+    <lightning-card icon-name="standard:quotes" variant="base" title="Product Price Simulator">
+        <!-- Spinner -->
+        <lightning-spinner if:true={showSpinner} alternative-text="Loading" size="medium"
+            variant="brand"></lightning-spinner>
+        <div slot="actions">
+        </div>
+        <!--<div slot="footer" class="slds-text-align_right">
+            <lightning-button variant="destructive" label="Close" onclick={handleClick}></lightning-button>
+        </div>-->
+        <!-- ALERT -->
+        <div class="slds-p-horizontal_medium">
+            <div lwc:ref="alertMessage" style="display:none" class="slds-notify slds-notify_alert" role="alert">
+                <span class="slds-assistive-text">warning</span>
+                <h2>{simulationAlertMessage}</h2>
+            </div>
+        </div>
+        <!-- LAYOUT -->
+        <div>
+            <lightning-layout multiple-rows>
+                <!-- Account -->
+                <lightning-layout-item size="6" class="slds-p-horizontal_medium">
+                    <lightning-record-picker label={label.lblAccounts} placeholder="Search Accounts..."
+                        object-api-name="Account" filter={accountFilter} value={selectedAccountId}
+                        disabled={disableAccountPicker} onchange={accountChangeHandler}>
+                    </lightning-record-picker>
+                </lightning-layout-item>
+
+                <!-- Sales Org -->
+                <lightning-layout-item size="6" class="slds-p-horizontal_medium">
+                    <lightning-combobox lwc:ref="selectedSalesOrg" name="Sales Org" label={label.lblSalesOrg}
+                        value={defaultSalesOrg} options={salesOrgOptions}></lightning-combobox>
+                </lightning-layout-item>
+
+                <!-- Product -->
+                <lightning-layout-item size="6" class="slds-p-horizontal_medium">
+                    <lightning-record-picker label={label.lblProducts} placeholder="Search Products..."
+                        object-api-name="Product2" display-info={productDisplayInfo} matching-info={productMatchingInfo}
+                        filter={productFilter} value={selectedProductId} disabled={disableProductPicker}
+                        onchange={productChangeHandler}>
+                    </lightning-record-picker>
+                </lightning-layout-item>
+
+                <!-- Quantity -->
+                <lightning-layout-item size="6" class="slds-p-horizontal_medium">
+                    <lightning-input lwc:ref="selectedQty" type="number" name="Quantity" label={label.lblQuantity}
+                        step="0.01" value="1"></lightning-input>
+                </lightning-layout-item>
+
+                <!-- Distribution Channel -->
+                <lightning-layout-item size="6" class="slds-p-horizontal_medium">
+                    <lightning-combobox lwc:ref="selectedDistChannel" name="Distribution Channel"
+                        label={label.lblDistributionChannel} value={defaultDistChannel}
+                        options={distChannelOptions}></lightning-combobox>
+                </lightning-layout-item>
+
+                <!-- Unit -->
+                <lightning-layout-item size="6" class="slds-p-horizontal_medium">
+                    <lightning-combobox lwc:ref="selectedUnit" name="Unit" label={label.lblUnit} options={unitOptions}
+                        value={defaultUnitValue}></lightning-combobox>
+                </lightning-layout-item>
+
+                <!-- Division -->
+                <lightning-layout-item size="6" class="slds-p-horizontal_medium">
+                    <lightning-input type="text" label={label.lblDivision} value={assignedDivisionLabel}
+                        disabled></lightning-input>
+                </lightning-layout-item>
+
+                <!-- Currency Code -->
+                <lightning-layout-item size="6" class="slds-p-horizontal_medium">
+                    <lightning-combobox lwc:ref="selectedCurrencyCode" name="Currency Code" label={label.lblCurrency}
+                        value={defaultCurrencyCode} options={currencyCodeOptions}></lightning-combobox>
+                </lightning-layout-item>
+
+                <!-- Button of Get Price Simulation -->
+                <lightning-layout-item size="12" class="slds-p-horizontal_medium slds-p-top_small">
+                    <lightning-button label={label.lblButtonGetPrices} variant="brand" icon-name="utility:button_choice"
+                        onclick={getPricesBtnClickHandler} stretch></lightning-button>
+                </lightning-layout-item>
+
+                <!-- Table of Get Prices -->
+                <lightning-layout-item size="12" class="slds-p-horizontal_medium slds-p-top_small">
+                    <template lwc:if={pricesBySimulation}>
+                        <table class="slds-table slds-table_cell-buffer slds-table_bordered"
+                            aria-label="Table of Get Prices">
+                            <thead>
+                                <tr class="slds-line-height_reset">
+                                    <th class="" scope="col">
+                                        <div class="slds-truncate" title="Gross Price">{label.lblGrossPrice}</div>
+                                    </th>
+                                    <th class="" scope="col">
+                                        <div class="slds-truncate" title="Discount">{label.lblDiscount}</div>
+                                    </th>
+                                    <th class="" scope="col">
+                                        <div class="slds-truncate" title="Net Price">{label.lblNetPrice}</div>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="slds-hint-parent">
+                                    <td data-label="Gross Price">
+                                        <div><lightning-formatted-number value={pricesBySimulation.grossAmountPerUnit}
+                                                format-style="currency"
+                                                currency-code={pricesBySimulation.currencyIsoCode}></lightning-formatted-number>
+                                        </div>
+                                    </td>
+                                    <td data-label="Discount">
+                                        <div><lightning-formatted-number value={pricesBySimulation.discountAmount}
+                                                format-style="currency"
+                                                currency-code={pricesBySimulation.currencyIsoCode}></lightning-formatted-number>
+                                        </div>
+                                    </td>
+                                    <td data-label="Net Price">
+                                        <div><lightning-formatted-number value={pricesBySimulation.amountPerUnit}
+                                                format-style="currency"
+                                                currency-code={pricesBySimulation.currencyIsoCode}></lightning-formatted-number>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </template>
+                    <template lwc:else>
+                        <div class="slds-align_absolute-center" style="font-weight:bold">{label.lblNoRecordsFound}
+                        </div>
+                    </template>
+                </lightning-layout-item>
+            </lightning-layout>
+        </div>
+    </lightning-card>
+</template>
